@@ -23,9 +23,11 @@ class Brand
     private ?string $name = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[Groups(['produit:list', 'brand:list'])]
     private ?\DateTimeInterface $createdAt = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['produit:list', 'brand:list'])]
     private ?\DateTimeInterface $modifyAt = null;
 
     #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Produit::class, orphanRemoval: true)]

@@ -44,8 +44,9 @@ class Produit
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $createdAt = null;
-
+    #[Groups(['produit:list'])]
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
+    #[Groups(['produit:list'])]
     private ?\DateTimeInterface $modifyAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'product')]
