@@ -161,9 +161,9 @@ class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Abst
      *  gestion des erreurs HTTP responses
      *
      * @param int $statusCode
-     * @param array $data
+     * @param $data une instance de l'entity
      * @param string|null $message
-     * @return array
+     * @return 
      */
     public function statusCode($statusCode, $data = [], string $message = null)
     {
@@ -173,50 +173,42 @@ class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Abst
 
                 $message === null && $message = "Ressource créee avec succès";
                 return $this->response(true, $statusCode, $data, $message);
-                break;
 
             case Response::HTTP_OK:
 
                 $message === null && $message = "Operation reussie";
                 return $this->response(true, $statusCode, $data, $message);
-                break;
 
             case Response::HTTP_BAD_REQUEST:
 
                 $message === null && $message = "Requète invalide";
                 return $this->response(false, $statusCode, $data, $message);
-                break;
 
             case Response::HTTP_UNAUTHORIZED:
 
                 $message === null && $message = "Impossible de vous authentifier, veuillez vous connecter";
                 return $this->response(false, $statusCode, $data, $message);
-                break;
 
             case Response::HTTP_FORBIDDEN:
 
                 $message === null && $message = "Vous n'avez pas les droits requis pour continuer cette action";
                 return $this->response(false, $statusCode, $data, $message);
-                break;
 
             case Response::HTTP_NOT_FOUND:
 
                 $message === null && $message = "Route ou ressource inexistante, vérifier le lien de la requête";
                 return $this->response(false, $statusCode, $data, $message);
-                break;
 
             case Response::HTTP_NOT_MODIFIED:
 
                 $message === null && $message = "Ressource non modifier";
                 return $this->response(false, $statusCode, $data, $message);
-                break;
 
 
             case Response::HTTP_UNSUPPORTED_MEDIA_TYPE:
 
                 $message === null && $message = "Ressource pas supporté";
                 return $this->response(false, $statusCode, $data, $message);
-                break;
         }
     }
 

@@ -189,4 +189,31 @@ class CroquetteController extends AbstractController
         $response = $this->statusCode(Response::HTTP_OK, $product);
         return $this->json($response, $response["status"], [], ["groups" => "produit:list"]);
     }
+
+
+    #[Route('/croquette/{id}', name: 'produit_delete', methods: ['DELETE'])]
+    public function delete(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): JsonResponse
+    {
+        // Récupérer l'ID du produit à supprimer depuis la requête
+        $produitId = $request->attributes->get('id');
+
+        // Chercher le produit dans la base de données
+        $produit = $produitRepository->find($produitId);
+
+        // Vérifier si le produit existe
+        if (!$produit) {
+            // Retourner une réponse d'erreur si le produit n'est pas trouvé
+            $response = $this->statusCode(Response::HTTP_NOT_FOUND);
+            return $this->json($response, $response["status"]);
+        }
+
+        // Supprimer le produit de la base de données
+        $entityManager->remove($produit);
+        $entityManager->flush();
+
+
+        // Retourner une réponse de succès
+        $response = $this->statusCode(Response::HTTP_OK);
+        return $this->json($response, $response["status"]);
+    }
 }

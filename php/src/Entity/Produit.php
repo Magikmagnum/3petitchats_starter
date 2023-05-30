@@ -43,8 +43,9 @@ class Produit
     private ?string $productId = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
     #[Groups(['produit:list'])]
+    private ?\DateTimeInterface $createdAt = null;
+
     #[ORM\Column(type: Types::DATETIME_MUTABLE, nullable: true)]
     #[Groups(['produit:list'])]
     private ?\DateTimeInterface $modifyAt = null;
