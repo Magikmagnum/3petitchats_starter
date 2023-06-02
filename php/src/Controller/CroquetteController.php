@@ -27,7 +27,6 @@ class CroquetteController extends AbstractController
         return $this->json($response, $response["status"], [], ["groups" => "produit:list"]);
     }
 
-
     #[Route('/croquette/{id}', name: 'croquette_show', methods: "GET"),]
     public function showOne($id, ProduitRepository $produitRepository): JsonResponse
     {
@@ -39,8 +38,6 @@ class CroquetteController extends AbstractController
         return $this->json($response, $response["status"]);
     }
 
-
-
     #[Route('/croquette_by_brand/{brand}', name: 'marque_show', methods: "GET"),]
     public function showByBrand($brand, ProduitRepository $produitRepository): JsonResponse
     {
@@ -48,7 +45,6 @@ class CroquetteController extends AbstractController
         $response = $this->statusCode(Response::HTTP_OK, $products);
         return $this->json($response, $response["status"], [], ["groups" => "brand:list"]);
     }
-
 
     #[Route('/croquette', name: 'croquette_add', methods: ['POST'])]
     public function add(Request $request, EntityManagerInterface $entityManager): JsonResponse
@@ -117,6 +113,7 @@ class CroquetteController extends AbstractController
         // Save the characteristic to the database
         $entityManager->persist($characteristic);
 
+        
         $product->setCharacteristic($characteristic);
 
         // Save the product to the database
@@ -126,8 +123,6 @@ class CroquetteController extends AbstractController
         $response = $this->statusCode(Response::HTTP_CREATED, $product);
         return $this->json($response, $response["status"], [], ["groups" => "produit:list"]);
     }
-
-
 
     #[Route('/croquette/{productId}', name: 'croquette_edit', methods: ['PUT'])]
     public function edit(Request $request, EntityManagerInterface $entityManager, int $productId): JsonResponse
@@ -189,7 +184,6 @@ class CroquetteController extends AbstractController
         $response = $this->statusCode(Response::HTTP_OK, $product);
         return $this->json($response, $response["status"], [], ["groups" => "produit:list"]);
     }
-
 
     #[Route('/croquette/{id}', name: 'produit_delete', methods: ['DELETE'])]
     public function delete(Request $request, EntityManagerInterface $entityManager, ProduitRepository $produitRepository): JsonResponse

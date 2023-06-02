@@ -41,6 +41,9 @@ class Characteristic
     #[ORM\OneToOne(inversedBy: 'characteristic', cascade: ['persist', 'remove'])]
     private ?Produit $produit = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $sterilise = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -126,6 +129,18 @@ class Characteristic
     public function setProduit(?Produit $produit): self
     {
         $this->produit = $produit;
+
+        return $this;
+    }
+
+    public function isSterilise(): ?bool
+    {
+        return $this->sterilise;
+    }
+
+    public function setSterilise(?bool $sterilise): self
+    {
+        $this->sterilise = $sterilise;
 
         return $this;
     }
