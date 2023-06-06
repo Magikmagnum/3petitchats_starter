@@ -27,6 +27,7 @@ import { Header } from '../../components/Header/Header';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
+// TODO: metre cette Object dans un fichier langue ou traduction et l'appeler ici
 const lng_analyse = {
     "Attente_analyse": "En attente d'analyse ...",
     "acheter_croquette": "Acheter une croquette",
@@ -82,8 +83,7 @@ export const data = {
 
 const besoin_energetique = 400;
 
-
-
+// TODO: metre tout ces interface dans le fichier API relatif a cela
 
 // Définition de l'interface des valeurs du formulaire
 interface FormValuesTypes {
@@ -476,8 +476,7 @@ const Form: React.FC = () => {
                     Analyser
                 </Button>
             </form>
-
-
+            
             <section className="right" >
 
                 {(Object.keys(response).length !== 0) && ((response as AnalyseDataResponseTypes).status === 200 && (response as AnalyseDataResponseTypes).data !== null) ? (

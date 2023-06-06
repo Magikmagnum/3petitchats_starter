@@ -1,6 +1,7 @@
 export const activityList = [
     { key: "Très Calme", value: "Très Calme" },
     { key: "Calme", value: "Calme" },
+    { key: "Normal", value: "Normal" },
     { key: "Agité", value: "Agité" }
 ];
 

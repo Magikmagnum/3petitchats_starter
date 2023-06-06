@@ -35,10 +35,10 @@ class AnalyserCroquette
     private $K2 = 1;
     private $K3 = 1;
     private $facteurActivite = 1;
-    private $poidIdeal = 4; // en killogram 
+    private $poidIdeal = 5; // en killogram 
 
     //  Tableau utilisé pour stocker des analyses qualitatives des croquettes 
-    private $analyseQualitatifs = []; 
+    private $analyseQualitatifs = [];
 
     // Attribut energetique
     private float $bee;
@@ -58,8 +58,8 @@ class AnalyserCroquette
     /**
      * Le constructeur de la classe AnalyserCroquette 
      *
-     * @param Objet $data
-     * @param Objet $list_croquettes
+     * @param $data
+     * @param $list_croquettes
      */
     public function __construct($data, $list_croquettes)
     {
@@ -125,6 +125,7 @@ class AnalyserCroquette
             $facteur = 0.5;
         }
 
+        dd($facteur);
         $this->be = $this->besoinEnergetiqueEntretien() * $facteur;
         return $this->be;
     }
@@ -167,11 +168,12 @@ class AnalyserCroquette
      * @param float $ena
      * @param float $fibre
      * @param float $eau
-     * @return void
+     * @return float
      */
     private function energieDigestible(float $proteine, float $lipide, float $ena, float $fibre, float $eau)
     {
-        return $this->energieBrut($proteine, $lipide, $ena, $fibre) * $this->pourcentageDigestibiliteChat($eau, $fibre) / 100;
+        $energieBrut = $this->energieBrut($proteine, $lipide, $ena, $fibre) * $this->pourcentageDigestibiliteChat($eau, $fibre) / 100;
+        return $energieBrut;
     }
 
 
@@ -270,8 +272,8 @@ class AnalyserCroquette
      */
     private function setChatParameter(string $race, string $stade, string $activite, string $morphologie, bool $sterilite)
     {
-        $this->exposantBEE = 0.67;
-        $this->coeffBEE = 100;
+        $this->exposantBEE = 0.75; //0.67;
+        $this->coeffBEE = 130; //100;
 
         if ($race == "Abyssin" || $race == "Sphynx") {
             $this->K1 = 1.2;
@@ -370,7 +372,7 @@ class AnalyserCroquette
     /**
      * il fait l'analyse des croquette
      *
-     * @param Objet $data
+     * @param $data
      * @return array
      */
     private function module_analyse($data): array
@@ -414,7 +416,6 @@ class AnalyserCroquette
     {
         $commentaire = '';
 
-
         switch ($score_croquette) {
             case 1:
                 $commentaire = "Félicitations ! Ces croquettes sont parfaitement adaptées à votre chat !";
@@ -451,7 +452,7 @@ class AnalyserCroquette
         if ($list_croquette['analyse_quantitatif_nutriment']['proteine'] == true && $list_croquette['analyse_quantitatif_nutriment']['lipide'] == true && $list_croquette['analyse_quantitatif_nutriment']['ENA'] == true) {
             return 1;
         }
-        
+
         if ($list_croquette['analyse_quantitatif_nutriment']['proteine'] == true && $list_croquette['analyse_quantitatif_nutriment']['lipide'] == false && $list_croquette['analyse_quantitatif_nutriment']['ENA'] == false) {
             return 2;
         }
@@ -480,5 +481,7 @@ class AnalyserCroquette
         if ($list_croquette['analyse_quantitatif_nutriment']['proteine'] == false && $list_croquette['analyse_quantitatif_nutriment']['lipide'] == false && $list_croquette['analyse_quantitatif_nutriment']['ENA'] == false) {
             return 4;
         }
+
+        return 0;
     }
 }

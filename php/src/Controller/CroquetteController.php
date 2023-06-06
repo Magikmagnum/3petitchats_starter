@@ -113,7 +113,7 @@ class CroquetteController extends AbstractController
         // Save the characteristic to the database
         $entityManager->persist($characteristic);
 
-        
+
         $product->setCharacteristic($characteristic);
 
         // Save the product to the database

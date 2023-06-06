@@ -12,4 +12,5 @@ kernel:
     type: annotation
 
 api_login_check:
-    path: /api/v1/login_check
+    path: /api/v1/login
+    methods: [POST]
