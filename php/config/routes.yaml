@@ -11,6 +11,6 @@ kernel:
     resource: ../src/Kernel.php
     type: annotation
 
-api_login_check:
+security_login:
     path: /api/v1/login
     methods: [POST]
