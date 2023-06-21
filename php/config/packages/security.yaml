@@ -64,3 +64,7 @@ when@test:
               time_cost: 3 # Lowest possible value for argon
               memory_cost: 10 # Lowest possible value for argon
 
+# - { path: ^/api/v1/register, roles: PUBLIC_ACCESS }
+#         - { path: ^/api/v1/login, roles: PUBLIC_ACCESS }
+#         - { path: ^/api/v1, roles: PUBLIC_ACCESS, methods: GET }
+#         - { path: ^/api/v1,       roles: ROLE_USER }
