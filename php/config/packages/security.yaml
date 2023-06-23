@@ -41,14 +41,14 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-        # - { path: ^/admin, roles: ROLE_ADMIN }
+        - { path: ^/admin, roles: ROLE_ADMIN }
         - { path: ^/profile, roles: ROLE_USER }
         - { path: ^/api/v1/register, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: POST }
         - { path: ^/api/v1/login, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: POST }
-        - { path: ^/api/v1, roles: IS_AUTHENTICATED_FULLY }
-        # - { path: ^/api/v1/croquette, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: GET }
-        # - { path: ^/api/v1/croquette_by_brand, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: GET }
         # - { path: ^/api/v1/analyse, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: POST }
+        # - { path: ^/api/v1/croquette, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: GET }
+        # - { path: ^/api/v1, roles: IS_AUTHENTICATED_FULLY }
+        # - { path: ^/api/v1/croquette_by_brand, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: GET }
         # - { path: ^/api/v1/brand, roles: IS_AUTHENTICATED_ANONYMOUSLY, methods: GET }
 
 when@test:

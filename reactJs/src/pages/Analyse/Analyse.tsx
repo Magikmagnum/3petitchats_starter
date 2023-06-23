@@ -127,6 +127,7 @@ interface AnalyseDataResponseTypes {
         name: string;
         sterilise: boolean;
         energie_metabolisable: number; //(en_kcal/100g)
+        besoin_energetique: number;
         analyse_quantitatif_nutriment: {
             proteine: boolean;
             lipide: boolean;
@@ -195,9 +196,10 @@ const Form: React.FC = () => {
 
 
     // Recuperer la list des marques depuis le serveur
+
     async function getBrandList() {
         try {
-            const response = await axios.get('https://api-comparateur.3ptits-chats.fr/api/v1/brand');
+            const response = await axios.get('http://localhost:8642/api/v1/brand');
 
 
             const brandsSelect: BrandTypes[] = [];
@@ -221,7 +223,7 @@ const Form: React.FC = () => {
     // Recuperer la list des marques depuis le serveur
     async function getCroquetteList(brand: string) {
         try {
-            const response = await axios.get('https://api-comparateur.3ptits-chats.fr/api/v1/croquette_by_brand/' + brand);
+            const response = await axios.get('http://localhost:8642/api/v1/croquette_by_brand/' + brand);
 
 
             const croquettesSelect: CroquetteTypes[] = [];
@@ -250,7 +252,7 @@ const Form: React.FC = () => {
 
             const { croquette, marque, ...parametre } = data;
 
-            axios.post("https://api-comparateur.3ptits-chats.fr/api/v1/analyse/" + croquette, {
+            axios.post("http://localhost:8642/api/v1/analyse/" + croquette, {
                 race: parametre.race,
                 stade: parametre.stade,
                 activite: parametre.activite,
@@ -476,7 +478,7 @@ const Form: React.FC = () => {
                     Analyser
                 </Button>
             </form>
-            
+
             <section className="right" >
 
                 {(Object.keys(response).length !== 0) && ((response as AnalyseDataResponseTypes).status === 200 && (response as AnalyseDataResponseTypes).data !== null) ? (
@@ -508,7 +510,7 @@ const Form: React.FC = () => {
                                 <div className="title titleCard">
                                     {lng_analyse.calories_chat_besion /* Les calories dont votre chat a besion */}
                                 </div>
-                                <text className='scrore'> {(response as AnalyseDataResponseTypes).data.energie_metabolisable} / {besoin_energetique} </text><text>*</text>
+                                <text className='scrore'> {(response as AnalyseDataResponseTypes).data.energie_metabolisable} / {Math.round((response as AnalyseDataResponseTypes).data.besoin_energetique)} </text><text>*</text>
 
                                 <Alert severity="warning">
                                     <AlertTitle>{lng_analyse.a_savoir /* A savoir */}</AlertTitle>
@@ -519,7 +521,7 @@ const Form: React.FC = () => {
                         <section className="profil" >
                             <p className='description'>
                                 * {lng_analyse.explication_besion /* Le besoin énergétique de votre chat est de  */}
-                                <text className='red txt-bold'> {besoin_energetique} </text>
+                                <text className='red txt-bold'> {Math.round((response as AnalyseDataResponseTypes).data.besoin_energetique)} </text>
                                 <text className='subTitle'>kcal/g</text>, {lng_analyse.explication_apport /* tandis que l'apport énergétique des croquettes est de   */}
                                 <text className='green txt-bold'> {(response as AnalyseDataResponseTypes).data.energie_metabolisable}  </text><text className='subTitle'>kcal/g</text>.</p>
                         </section>

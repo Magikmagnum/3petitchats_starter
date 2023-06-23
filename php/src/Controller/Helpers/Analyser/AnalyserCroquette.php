@@ -15,6 +15,38 @@ namespace App\Controller\Helpers\Analyser;
  * 
  * Dévelloper par Eric Gansa, ericgansa01@gmail.com
  * Pour 3ptitsChats 
+ * 
+ * 
+ * 
+ * 
+ * Les besoins énergétiques et l'énergie métabolisable sont deux concepts différents 
+ * liés à la quantité d'énergie nécessaire à l'organisme, 
+ * mais ils se réfèrent à des aspects distincts :
+ * 
+ * 
+ * 
+ * Besoins énergétiques : 
+ * 
+ * Les besoins énergétiques désignent la quantité totale d'énergie dont un individu 
+ * a besoin pour maintenir ses fonctions vitales, son métabolisme de base et ses activités physiques. 
+ * Les besoins énergétiques varient en fonction de différents facteurs, 
+ * tels que l'âge, le sexe, le poids, la taille, le niveau d'activité physique, le métabolisme individuel, etc. 
+ * Ils sont généralement exprimés en kilocalories (kcal) ou en joules (J). 
+ * Les recommandations nutritionnelles et les équations de calcul sont utilisées pour estimer 
+ * les besoins énergétiques d'une personne en fonction de ces facteurs. 
+ * 
+ * 
+ * 
+ * Énergie métabolisable : 
+ * L'énergie métabolisable fait référence à la quantité d'énergie contenue 
+ * dans les aliments qui est réellement disponible pour l'organisme après la digestion et l'absorption. 
+ * Elle représente la quantité d'énergie utilisable par l'organisme pour ses fonctions physiologiques, 
+ * la production de chaleur, l'activité physique, etc. 
+ * L'énergie métabolisable tient compte des pertes d'énergie dues à la digestion et au métabolisme des aliments. 
+ * Elle est mesurée en kilocalories (kcal) et varie en fonction des macronutriments (glucides, lipides, protéines) 
+ * présents dans l'alimentation.
+ * 
+ * 
  */
 
 class AnalyserCroquette
@@ -35,7 +67,7 @@ class AnalyserCroquette
     private $K2 = 1;
     private $K3 = 1;
     private $facteurActivite = 1;
-    private $poidIdeal = 5; // en killogram 
+    private $poidIdeal = 4; // en killogram 
 
     //  Tableau utilisé pour stocker des analyses qualitatives des croquettes 
     private $analyseQualitatifs = [];
@@ -101,6 +133,10 @@ class AnalyserCroquette
 
     /**
      * Besoin énergétique d’entretien (BEE)
+     * 
+     * C'est la quantité d'énergie qu'un animal doit ingérer 
+     * pour couvrir ses dépenses énergétiques 
+     * et maintenir son poids idéal.
      *
      * @return float
      */
@@ -125,7 +161,6 @@ class AnalyserCroquette
             $facteur = 0.5;
         }
 
-        dd($facteur);
         $this->be = $this->besoinEnergetiqueEntretien() * $facteur;
         return $this->be;
     }
@@ -159,6 +194,8 @@ class AnalyserCroquette
     {
         return 87.9 - (0.88 * $fibre * 100) / (100 - $eau);
     }
+
+
 
     /**
      * Renvoie la quantité d’énergie digérée et absorbée par l’animal
@@ -384,10 +421,11 @@ class AnalyserCroquette
 
         // Energie metabolisable en kcal/100g
         $croquette['energie_metabolisable'] = $this->energieMetabolisable($data->getCharacteristic()->getProteine(), $data->getCharacteristic()->getLipide(), $this->ENA($data->getCharacteristic()->getProteine(), $data->getCharacteristic()->getLipide(), $data->getCharacteristic()->getFibre(), $data->getCharacteristic()->getCendres(), $data->getCharacteristic()->getEau()), $data->getCharacteristic()->getFibre(), $data->getCharacteristic()->getEau());
-
+        $croquette['besoin_energetique'] = $this->be;
         $croquette['analyse_quantitatif_nutriment'] = $this->analyseQualitatif($data->getCharacteristic()->getProteine(), $data->getCharacteristic()->getLipide(), $this->ENA($data->getCharacteristic()->getProteine(), $data->getCharacteristic()->getLipide(), $data->getCharacteristic()->getFibre(), $data->getCharacteristic()->getCendres(), $data->getCharacteristic()->getEau()));
         // Quantite journaliere en g/jour
         $croquette['quantite_Journaliere'] = $this->quantiteJournaliere();
+
 
         $croquette['url'] = (string) $data->getUrl();
         $croquette['urlimage'] = (string) $data->getUrlimage();
@@ -398,7 +436,7 @@ class AnalyserCroquette
         $croquette['element_nutritif']['fibre'] = (float) $data->getCharacteristic()->getFibre();
         $croquette['element_nutritif']['cendres'] = (float) $data->getCharacteristic()->getCendres();
         $croquette['element_nutritif']['eau'] = (float) $data->getCharacteristic()->getEau();
-        $croquette['score'] = $this->getSocre($croquette);
+        $croquette['score'] = $croquette['energie_metabolisable'] / $croquette['besoin_energetique'];
         $croquette['commentaire'] = $this->getCommentaire($croquette['score']);
         $croquette['facteur_ajustement'] = (float)  $this->K1 * $this->K2 * $this->K3 * $this->facteurActivite;
 
@@ -409,30 +447,25 @@ class AnalyserCroquette
     /**
      * La fonction revoie un commentaire lier au score de la croquette
      *
-     * @param int $score_croquette
+     * @param float $score_croquette
      * @return string
      */
-    private function getCommentaire(int $score_croquette): string
+    private function getCommentaire(float $score_croquette): string
     {
         $commentaire = '';
 
-        switch ($score_croquette) {
-            case 1:
-                $commentaire = "Félicitations ! Ces croquettes sont parfaitement adaptées à votre chat !";
-                break;
-
-            case 2:
-                $commentaire = "Félicitations ! Ces croquettes sont parfaitement adaptées à votre chat !";
-                break;
-
-            case 3:
-                $commentaire = "Attention ! Ces croquettes sont trop caloriques pour votre chat. Il risque de prendre du poids. Il faut des croquettes plus light ou une gamelle anti-glouton.";
-                break;
-
-            case 4:
-                $commentaire = "Attention ! Ces croquettes ne sont pas assez caloriques pour votre chat. Il risque de manquer d’énergie et de perdre du poids. Il faut des croquettes plus nourrissantes ou l’inciter à manger plus.";
-                break;
+        if ($score_croquette <= 1) {
+            # code...
+            $commentaire = "Attention ! Ces croquettes ne sont pas assez caloriques pour votre chat. Il risque de manquer d’énergie et de perdre du poids. Il faut des croquettes plus nourrissantes ou l’inciter à manger plus.";
+        } elseif ($score_croquette >= 1) {
+            # code...
+            $commentaire = "Attention ! Ces croquettes sont trop caloriques pour votre chat. Il risque de prendre du poids. Il faut des croquettes plus light ou une gamelle anti-glouton.";
+        } else {
+            # code...
+            $commentaire = "Félicitations ! Ces croquettes sont parfaitement adaptées à votre chat !";
         }
+
+
 
         return $commentaire;
     }
@@ -481,6 +514,14 @@ class AnalyserCroquette
         if ($list_croquette['analyse_quantitatif_nutriment']['proteine'] == false && $list_croquette['analyse_quantitatif_nutriment']['lipide'] == false && $list_croquette['analyse_quantitatif_nutriment']['ENA'] == false) {
             return 4;
         }
+
+
+        $element_nutritif = $list_croquette['element_nutritif'];
+
+
+
+
+
 
         return 0;
     }
