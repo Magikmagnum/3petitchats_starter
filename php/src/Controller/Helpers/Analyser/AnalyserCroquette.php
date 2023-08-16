@@ -12,18 +12,14 @@ namespace App\Controller\Helpers\Analyser;
  * qui contient plusieurs méthodes pour l'analyse des croquettes 
  * et le calcul des besoins nutritionnels d'un chat.
  * 
- * 
  * Dévelloper par Eric Gansa, ericgansa01@gmail.com
  * Pour 3ptitsChats 
  * 
- * 
- * 
+ * -----------------------------------------------------------------------------------------------------------------
  * 
  * Les besoins énergétiques et l'énergie métabolisable sont deux concepts différents 
  * liés à la quantité d'énergie nécessaire à l'organisme, 
  * mais ils se réfèrent à des aspects distincts :
- * 
- * 
  * 
  * Besoins énergétiques : 
  * 
@@ -34,8 +30,6 @@ namespace App\Controller\Helpers\Analyser;
  * Ils sont généralement exprimés en kilocalories (kcal) ou en joules (J). 
  * Les recommandations nutritionnelles et les équations de calcul sont utilisées pour estimer 
  * les besoins énergétiques d'une personne en fonction de ces facteurs. 
- * 
- * 
  * 
  * Énergie métabolisable : 
  * L'énergie métabolisable fait référence à la quantité d'énergie contenue 
@@ -51,14 +45,6 @@ namespace App\Controller\Helpers\Analyser;
 
 class AnalyserCroquette
 {
-    // Parametre a modifier pour les chat 
-
-    // Le taux de protéines conseillé pour le chat est de 40 % minimum et peut aller sans problème au-delà des 50 % dans la composition du produit.
-    private const PROTEINE_VALUE = ['min' => 40, 'max' => 60];
-    // Doit rester présent en petite quantité
-    private const GLUCIDE_VALUE = ['min' => 0, 'max' => 20];
-    // Si les graisses animales sont bénéfiques pour la santé du chat, les graisses végétales doivent être totalement proscrites.
-    private const LIPIDE_VALUE = ['min' => 12, 'max' => 20];
 
 
     private $exposantBEE; // exposant utilisé dans le calcul des besoins énergétiques de l'animal
@@ -69,8 +55,7 @@ class AnalyserCroquette
     private $facteurActivite = 1;
     private $poidIdeal = 4; // en killogram 
 
-    //  Tableau utilisé pour stocker des analyses qualitatives des croquettes 
-    private $analyseQualitatifs = [];
+
 
     // Attribut energetique
     private float $bee;
@@ -78,13 +63,39 @@ class AnalyserCroquette
     private float $ena;
     private float $em;
 
+
+
     // Attribut de digestibilité
     private float $alimentEntrant;
     private float $excrement;
     private float $tauxDigestibilite;
 
+
+
     //  liste des croquettes analyser
     private $list_croquettes;
+
+
+
+
+
+
+
+    // Parametre de l'analyse qualificatif  ---------------------------------------
+
+    //  Tableau utilisé pour stocker des analyses qualitatives des croquettes 
+    private $analyseQualitatifs = [];
+    // Le taux de protéines conseillé pour le chat est de 40 % minimum et peut aller 
+    // sans problème au-delà des 50 % dans la composition du produit.
+    private const PROTEINE_VALUE = ['min' => 40, 'max' => 60];
+    // Doit rester présent en petite quantité
+    private const GLUCIDE_VALUE = ['min' => 0, 'max' => 20];
+    // Si les graisses animales sont bénéfiques pour la santé du chat, 
+    // les graisses végétales doivent être totalement proscrites.
+    private const LIPIDE_VALUE = ['min' => 12, 'max' => 20];
+    // ------------------------------------------------------------------------------
+
+
 
 
     /**
@@ -309,8 +320,76 @@ class AnalyserCroquette
      */
     private function setChatParameter(string $race, string $stade, string $activite, string $morphologie, bool $sterilite)
     {
+        // K1 coefficient de race
+        // K2 coefficient physiologiques
+        // K3 coefficient de sexe
+        // K4 coefficient activité 
+        // K5 coefficient Pathologie
+
+
         $this->exposantBEE = 0.75; //0.67;
         $this->coeffBEE = 130; //100;
+
+        $tableau_chat = [
+            "nom" => "MAINE COON",
+            "niveau_activite" => "",
+            "metabolisme" => "",
+            "predisposition_obesite" => "",
+            "besion_energetique" => "",
+            "taille" => "",
+            "poids" => [
+                "males" => [
+                    "junior" => [
+                        "min_weight" => "0.9",
+                        "max_weight" => "4",
+                        "information" => "Les chatons connaissent une croissance rapide, leur poids augmente considérablement à mesure qu'ils grandissent et ils ont besoins d'une alimentation riche en protéines et en calories.",
+                    ],
+                    "adulte" => [
+                        "min_weight" => "3.5",
+                        "max_weight" => "6",
+                        "information" => "Le chaton atteint progressivement sa taille adulte, il a besoin d'une alimentation adaptée à son stade de développement.",
+                    ],
+                    "senior" => [
+                        "min_weight" => "6.8",
+                        "max_weight" => "9.1",
+                        "information" => "Le chat atteint généralement sa taille adulte complète vers l'âge de 3 à 4 ans.",
+                    ],
+                ],
+                "femeles" => [
+                    "junior" => [
+                        "min_weight" => "0.9",
+                        "max_weight" => "4",
+                        "information" => "Les chatons connaissent une croissance rapide, leur poids augmente considérablement à mesure qu'ils grandissent et ils ont besoins d'une alimentation riche en protéines et en calories.",
+                    ],
+                    "adulte" => [
+                        "min_weight" => "3.5",
+                        "max_weight" => "6",
+                        "information" => "Le chaton atteint progressivement sa taille adulte, il a besoin d'une alimentation adaptée à son stade de développement.",
+                    ],
+                    "senior" => [
+                        "min_weight" => "4.5",
+                        "max_weight" => "6.8",
+                        "information" => "Le chat atteint généralement sa taille adulte complète vers l'âge de 3 à 4 ans.",
+                    ],
+                ],
+            ],
+        ];
+
+
+
+        if ($stade == "De 2 à 4 mois") {
+            $this->K2 = 2;
+        } elseif ($stade == "De 4 à 6 mois") {
+            $this->K2 = 1.6;
+        } elseif ($stade == "De 6 à 8 mois") {
+            $this->K2 = 1.3;
+        } elseif ($stade == "De 8 à 12 mois") {
+            $this->K2 = 1.1;
+        } else {
+            $this->K2 = 1;
+        }
+
+
 
         if ($race == "Abyssin" || $race == "Sphynx") {
             $this->K1 = 1.2;
@@ -354,12 +433,12 @@ class AnalyserCroquette
             en multipliant le résultat de la méthode de l'entretien par 
             un facteur correspondant au niveau d'activité physique :
             
-            
             Chat peu actif : Besoins énergétiques x 1,2
             Chat modérément actif : Besoins énergétiques x 1,4
             Chat très actif : Besoins énergétiques x 1,6
 
         */
+
 
         if ($activite == "Calme") {
             $this->facteurActivite = 0.9;
@@ -526,3 +605,1777 @@ class AnalyserCroquette
         return 0;
     }
 }
+
+
+// Tableau associatif contenant les âges en mois et les poids idéaux en kg pour un Maine Coon
+
+$tableau_chat = [
+    "nom" => "MAINE COON",
+    "niveau_activite" => "",
+    "metabolisme" => "",
+    "predisposition_obesite" => "",
+    "besion_energetique" => "",
+    "taille" => "",
+    "poids" => [
+        "males" => [
+            "junior" => [
+                "min_weight" => "0.9",
+                "max_weight" => "4",
+                "information" => "Les chatons connaissent une croissance rapide, leur poids augmente considérablement à mesure qu'ils grandissent et ils ont besoins d'une alimentation riche en protéines et en calories.",
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6",
+                "information" => "Le chaton atteint progressivement sa taille adulte, il a besoin d'une alimentation adaptée à son stade de développement.",
+            ],
+            "senior" => [
+                "min_weight" => "6.8",
+                "max_weight" => "9.1",
+                "information" => "Le chat atteint généralement sa taille adulte complète vers l'âge de 3 à 4 ans.",
+            ],
+        ],
+        "femeles" => [
+            "junior" => [
+                "min_weight" => "0.9",
+                "max_weight" => "4",
+                "information" => "Les chatons connaissent une croissance rapide, leur poids augmente considérablement à mesure qu'ils grandissent et ils ont besoins d'une alimentation riche en protéines et en calories.",
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6",
+                "information" => "Le chaton atteint progressivement sa taille adulte, il a besoin d'une alimentation adaptée à son stade de développement.",
+            ],
+            "senior" => [
+                "min_weight" => "4.5",
+                "max_weight" => "6.8",
+                "information" => "Le chat atteint généralement sa taille adulte complète vers l'âge de 3 à 4 ans.",
+            ],
+        ],
+    ],
+];
+
+// De 0 mois à 6 mois, Chaton. => min 0,5 , max 5,5
+// De 6 mois à 1 ans, Adolescent. => min 0,5 , max 5,5
+// De 1 ans à 3 ans, Adulte. => min 0,5 , max 5,5
+// De 3 ans et plus, Senior. => min 0,5 , max 5,5
+
+
+$data = array(
+    array("0-2 mois", "0.9 - 1.5", "0.9 - 1.5", "Les chatons connaissent une croissance rapide, et leur poids augmente considérablement à mesure qu'ils grandissent."),
+    array("2-6 mois", "2.5 - 4", "2.5 - 4", "La croissance du chaton continue de progresser, il a besoin d'une alimentation riche en protéines et en calories."),
+    array("6 mois - 1 an", "3.5 - 6", "3.5 - 6", "Le chaton atteint progressivement sa taille adulte, il a besoin d'une alimentation adaptée à son stade de développement."),
+    array("1-3 ans", "6.8 - 9.1", "4.5 - 6.8", "Le chat atteint généralement sa taille adulte complète vers l'âge de 3 à 4 ans.")
+);
+
+$weightList = array(
+    [
+        "nom" => "CHAT SANS RACE (EUROPÉEN)",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3",
+                "max_weight" => "6"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "ABYSSIN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "AMERICAN BOBTAIL",
+        "niveau_activite" => "Modéré à élevé",
+        "metabolisme" => "Moyen à élevé",
+        "predisposition_obesite" => "Modérée",
+        "besion_energetique" => "Élevé",
+        "taille" => "Moyenne à grande",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "85 g",
+                "max_weight" => "1.8 kg"
+            ],
+            "adulte" => [
+                "min_weight" => "3.5 kg",
+                "max_weight" => "9 kg"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "AMERICAN CURL",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "AMERICAN SHORTHAIR",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "AMERICAN WIREHAIR",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "ANATOLI (TURKISH SHORTHAIR)",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3",
+                "max_weight" => "7"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "ANGORA TURC",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "ASIAN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3",
+                "max_weight" => "5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "AUSTRALIAN MIST",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "BALINAIS",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "BENGAL",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "4.5",
+                "max_weight" => "9"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "BOMBAY",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "BRAZILIAN SHORTHAIR",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3",
+                "max_weight" => "5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "BRITISH LONGHAIR",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "4.5",
+                "max_weight" => "9"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "BRITISH SHORTHAIR",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "4.5",
+                "max_weight" => "9"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "BURMESE AMERICAIN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "BURMESE ANGLAIS",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "BURMILLA",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CALIFORNIAN REX",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CALIFORNIAN SPANGLED",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CEYLAN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CHANTILLY",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CHARTEUX",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CHARTREUX",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CHAT DES BOIS NORVEGIEN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CHAT DU SRI LANKA",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CHAT MOHAIR",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CHAT PERUVIEN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CHAT SANS PELAGE",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3",
+                "max_weight" => "6"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CHINCHILLA",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CORNISH REX",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "CURL AMERICAIN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "DEVON REX",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "DONSKOY",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "EUROPEEN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3",
+                "max_weight" => "6"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "EXOTIC SHORTHAIR",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "HIGHLAND FOLD",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "HIMALAYEN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "JAVANESE",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "KORAT",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "KURILIAN BOBTAIL",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "LA PERM",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3",
+                "max_weight" => "6"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "LYKOI",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "MAINE COON",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "males" => [
+                "junior" => [
+                    "min_weight" => "",
+                    "max_weight" => ""
+                ],
+                "adulte" => [
+                    "min_weight" => "4.5",
+                    "max_weight" => "11"
+                ],
+                "senior" => [
+                    "min_weight" => "",
+                    "max_weight" => ""
+                ],
+            ],
+            "femeles" => [
+                "junior" => [
+                    "min_weight" => "",
+                    "max_weight" => ""
+                ],
+                "adulte" => [
+                    "min_weight" => "4.5",
+                    "max_weight" => "11"
+                ],
+                "senior" => [
+                    "min_weight" => "",
+                    "max_weight" => ""
+                ],
+            ],
+        ],
+    ],
+    [
+        "nom" => "MANX",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "MAU EGYPTIEN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "MAU THAI",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "MAU THAÏ",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "MOINS DE 3 KG",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "1.5",
+                "max_weight" => "3"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "MUNCHKIN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "NEBELUNG",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "NORVEGIEN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "OJOS AZULES",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "OREGON REX",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "ORIENTAL",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "PERSAN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "PETERBALD",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "PIXIE BOB",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "9"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "RAGDOLL",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "4.5",
+                "max_weight" => "9"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "RUSSE",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SACRE DE BIRMANIE",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SAVANNAH",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "4.5",
+                "max_weight" => "11"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SCOTTISH FOLD",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SELKIRK REX",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SERENGETI",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SIAMESE",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SIBERIEN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SINGAPURA",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "2.5",
+                "max_weight" => "5.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SNOWSHOE",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SOKOKE",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SOMALI",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "SPHYNX",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "THAI",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "TURC DE VAN",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "URAL REX",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "6.5"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ],
+    [
+        "nom" => "YORK CHOCOLAT",
+        "niveau_activite" => "",
+        "metabolisme" => "",
+        "predisposition_obesite" => "",
+        "besion_energetique" => "",
+        "taille" => "",
+        "poids" => [
+            "junior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+            "adulte" => [
+                "min_weight" => "3.5",
+                "max_weight" => "7"
+            ],
+            "senior" => [
+                "min_weight" => "",
+                "max_weight" => ""
+            ],
+        ],
+    ]
+);

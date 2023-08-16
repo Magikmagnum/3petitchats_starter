@@ -24,26 +24,18 @@ import { Header } from '../../components/Header/Header';
 
 
 
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Checkbox from '@mui/material/Checkbox';
+
+
+import Box from '@mui/material/Box';
+import TextField from '@mui/material/TextField';
+
+
+import lang_fr from '../../lang/fr';
 
 ChartJS.register(ArcElement, Tooltip, Legend);
-
-// TODO: metre cette Object dans un fichier langue ou traduction et l'appeler ici
-const lng_analyse = {
-    "Attente_analyse": "En attente d'analyse ...",
-    "acheter_croquette": "Acheter une croquette",
-    "Protéine": "",
-    "Lipide": "",
-    "Glucide": "",
-    "Mauvai": "",
-    "Fibre": "",
-    "Excellen": "",
-    "Eau": "",
-    "calories_chat_besion": "Les calories dont votre chat a besion",
-    "apport_nutritif_croquettes": "Apport nutritif des croquettes",
-    "a_savoir": "À savoir",
-    "explication_besion": `Le besoin énergétique de votre chat est de,`,
-    "explication_apport": `tandis que l'apport énergétique des croquettes est de,`,
-}
 
 export const data = {
     labels: ['Proteine', 'Glucide', 'Lipide', 'Fibre', 'Eau', 'Cendres'],
@@ -359,6 +351,13 @@ const Form: React.FC = () => {
                         ))}
                     </Select>
                 </FormControl>
+
+                <FormGroup>
+                    <FormControlLabel control={<Checkbox defaultChecked />} label="Label" />
+                </FormGroup>
+
+                <TextField id="outlined-basic" label="Outlined" variant="outlined" />
+
                 {/* Champ select pour la ligne de croquette */}
                 <FormControl fullWidth>
                     <InputLabel id="croquette-select-label">Croquette</InputLabel>
@@ -378,6 +377,8 @@ const Form: React.FC = () => {
                         ))}
                     </Select>
                 </FormControl>
+
+
                 {/* Champ select pour la race de race */}
                 <FormControl fullWidth>
                     <InputLabel id="demo-simple-select-label">Race</InputLabel>
@@ -397,6 +398,8 @@ const Form: React.FC = () => {
                         ))}
                     </Select>
                 </FormControl>
+
+
                 {/* Champ select pour la ligne de âge */}
                 <FormControl fullWidth>
                     <InputLabel id="age-select-label" >Âge</InputLabel>
@@ -487,7 +490,7 @@ const Form: React.FC = () => {
                             <div style={{ flex: "2" }}>
                                 <Header srcImg={(response as AnalyseDataResponseTypes).data.urlimage} title={(response as AnalyseDataResponseTypes).data.name} subtitle={(response as AnalyseDataResponseTypes).data.marque} description={(response as AnalyseDataResponseTypes).data.analyse_quantitatif_nutriment.proteine ? 'Croquettes pour chat stérilisé' : 'Croquettes pour chat non-stérilisé'} styleImage='avatarSqareMax' styleContent='headerCmpCenter' styleTitle='headerTitle' />
                                 {('data' in response && 'url' in response.data && response.data.url !== '') ? <Button type="submit" variant="contained" color="primary" className='button-bay' onClick={handleButtonBuyClick}>
-                                    {lng_analyse.acheter_croquette /* Acheter une croquette */}
+                                    {lang_fr.acheter_croquette /* Acheter une croquette */}
                                 </Button> : ''}
                             </div>
                             <div className="noteBox" style={{ flex: "2" }}>
@@ -498,7 +501,7 @@ const Form: React.FC = () => {
                         <section className="profil" >
                             <div className="noteBox">
                                 <div className="title titleCard">
-                                    {lng_analyse.apport_nutritif_croquettes /* Les nutriments dont votre chat a besoin */}
+                                    {lang_fr.apport_nutritif_croquettes /* Les nutriments dont votre chat a besoin */}
                                 </div>
                                 <Bar title="Proteine" value={(response as AnalyseDataResponseTypes).data.element_nutritif.proteine / 10} status={(response as AnalyseDataResponseTypes).data.analyse_quantitatif_nutriment.proteine} />
                                 <Bar title="Lipide" value={(response as AnalyseDataResponseTypes).data.element_nutritif.lipide / 10} status={(response as AnalyseDataResponseTypes).data.analyse_quantitatif_nutriment.lipide} />
@@ -508,28 +511,28 @@ const Form: React.FC = () => {
                             </div>
                             <div className="noteBox">
                                 <div className="title titleCard">
-                                    {lng_analyse.calories_chat_besion /* Les calories dont votre chat a besion */}
+                                    {lang_fr.calories_chat_besion /* Les calories dont votre chat a besion */}
                                 </div>
                                 <text className='scrore'> {(response as AnalyseDataResponseTypes).data.energie_metabolisable} / {Math.round((response as AnalyseDataResponseTypes).data.besoin_energetique)} </text><text>*</text>
 
                                 <Alert severity="warning">
-                                    <AlertTitle>{lng_analyse.a_savoir /* A savoir */}</AlertTitle>
+                                    <AlertTitle>{lang_fr.a_savoir /* A savoir */}</AlertTitle>
                                     {(response as AnalyseDataResponseTypes).data.commentaire}
                                 </Alert>
                             </div>
                         </section>
                         <section className="profil" >
                             <p className='description'>
-                                * {lng_analyse.explication_besion /* Le besoin énergétique de votre chat est de  */}
+                                * {lang_fr.explication_besion /* Le besoin énergétique de votre chat est de  */}
                                 <text className='red txt-bold'> {Math.round((response as AnalyseDataResponseTypes).data.besoin_energetique)} </text>
-                                <text className='subTitle'>kcal/g</text>, {lng_analyse.explication_apport /* tandis que l'apport énergétique des croquettes est de   */}
+                                <text className='subTitle'>kcal/g</text>, {lang_fr.explication_apport /* tandis que l'apport énergétique des croquettes est de   */}
                                 <text className='green txt-bold'> {(response as AnalyseDataResponseTypes).data.energie_metabolisable}  </text><text className='subTitle'>kcal/g</text>.</p>
                         </section>
                     </>
                 ) : (
                     <div className='waiter'>
                         <img src={require("../../images/avatar/chat.png")} className="waiter-img" alt="chat" />
-                        <p>{lng_analyse.Attente_analyse /* En attente d'analyse .. */}.</p>
+                        <p>{lang_fr.Attente_analyse /* En attente d'analyse .. */}.</p>
                     </div>
                 )}
             </section>
