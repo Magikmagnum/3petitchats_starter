@@ -214,3 +214,73 @@ export async function getCroquetteQuery(): Promise<DataContactType> {
 }
 
 
+
+
+
+
+
+// Définition de l'interface des valeurs du formulaire
+export interface FormValuesTypes {
+    marque: string;
+    croquette: string;
+    race: string;
+    stade: string;
+    activite: string;
+    morphologie: string;
+    sterilite: string;
+}
+
+// Définition de l'interface du tableau de marques
+export interface BrandTypes {
+    value: string;
+    key: string;
+}
+
+
+// Définition de l'interface du tableau de croquette
+export interface CroquetteTypes {
+    value: string;
+    key: number;
+}
+
+
+// interface AnalyseDataRequestTypes {
+//     animal: string;
+//     race: string;
+//     stade: string;
+//     activite: string;
+//     morphologie: string;
+//     sterilite: boolean;
+// }
+
+
+export interface AnalyseDataResponseTypes {
+    status: number;
+    success: boolean;
+    message: string;
+    data: {
+        marque: string;
+        name: string;
+        sterilise: boolean;
+        energie_metabolisable: number; //(en_kcal/100g)
+        besoin_energetique: number;
+        analyse_quantitatif_nutriment: {
+            proteine: boolean;
+            lipide: boolean;
+            ENA: boolean;
+        };
+        quantite_Journaliere: number;  //(en_g/jour)
+        url: string;
+        urlimage: string;
+        element_nutritif: {
+            ENA: number;
+            proteine: number;
+            lipide: number;
+            fibre: number;
+            cendres: number;
+            eau: number;
+        };
+        score: number;
+        commentaire: string;
+    };
+}
