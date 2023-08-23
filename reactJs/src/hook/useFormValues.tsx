@@ -10,16 +10,26 @@ export interface FormValuesTypes {
     activite: string;
 }
 
+const initialValues: FormValuesTypes = {
+    race: '',
+    marque: '',
+    croquette: '',
+    stade: '',
+    morphologie: '',
+    sterilite: '',
+    activite: '',
+};
+
+
+// Type pour le hook useFormValues
+export type FormTypes = {
+    formData: FormValuesTypes;
+    setFormData: (key: string, value: string) => void;
+    resetFormData: (valuesToReset?: (keyof FormValuesTypes)[]) => void;
+};
+
 const useFormValues = () => {
-    const initialValues: FormValuesTypes = {
-        race: '',
-        marque: '',
-        croquette: '',
-        stade: '',
-        morphologie: '',
-        sterilite: '',
-        activite: '',
-    };
+
     const [formData, setDataForm] = useState<FormValuesTypes>(initialValues);
 
     const resetFormData = (valuesToReset?: (keyof FormValuesTypes)[]) => {

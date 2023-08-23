@@ -10,17 +10,20 @@ export type StepTypes = {
 // Type pour le hook useStepTracker
 export type TrackerStepType = {
     step: StepTypes;
-    setStep: (key: keyof StepTypes, value: boolean) => [step: StepTypes, setStep: (key: keyof StepTypes, value: boolean) => void];
+    setStep: (key: keyof StepTypes, value: boolean) => void;
 };
 
+// État initial des étapes
+const initialStep: StepTypes = {
+    step_croquette: false,
+    step_race: false,
+    step_parametre: false,
+};
+
+
+
 // Hook personnalisé pour suivre les étapes
-const useStepTracker = () => {
-    // État initial des étapes
-    const initialStep: StepTypes = {
-        step_croquette: false,
-        step_race: false,
-        step_parametre: false,
-    };
+function useStepTracker(): { step: StepTypes; setStep: (key: keyof StepTypes, value: boolean) => void; } {
 
     // État pour suivre les étapes
     const [step, setStepFunction] = useState<StepTypes>(initialStep);
@@ -36,6 +39,6 @@ const useStepTracker = () => {
 
     // Retourner l'état des étapes et la fonction pour les mettre à jour
     return { step, setStep };
-};
+}
 
 export default useStepTracker;

@@ -5,40 +5,35 @@ import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
 import TextField from '@mui/material/TextField';
-import { SelectChangeEvent } from '@mui/material/Select';
 import { Button } from '@mui/material/';
 
-import SelectField, { OptionType } from "./SelectField";
+import SelectField from "./SelectField";
 
 import useBrandList from '../../api/useBrandList';
 import useCroquetteList from '../../api/useCroquetteList';
-import { FormValuesTypes } from '../../hook/useFormValues';
+import { FormTypes } from '../../hook/useFormValues';
 import { TrackerStepType } from '../../hook/useStepTracker';
 
 import lang_fr from '../../lang/fr';
 
 // Définition des types des props attendues par le composant
 interface InputCroquetteProps {
-    formData: FormValuesTypes,
-    resetForm: () => void,
-    onChange: (fieldName: string, value: string) => void,
-    trackerStep: TrackerStepType
+    trackerStep: TrackerStepType,
+    formAdmin: FormTypes,
 }
 
 
 const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
-    formData,
-    resetForm,
-    onChange,
     trackerStep,
+    formAdmin,
 }) => {
 
+    const { step, setStep } = trackerStep;
+    const { formData, setFormData, resetFormData } = formAdmin;
 
     // Utiliser le hook pour obtenir la liste des marques et croquettes
     const { brandList } = useBrandList();
     const croquetteList = useCroquetteList(formData.marque);
-
-    const { step, setStep } = trackerStep;;
 
     // État local pour gérer l'état de la case à cocher
     const [isChecked, setIsChecked] = useState(false);
@@ -62,7 +57,7 @@ const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
                         label="Marque"
                         value={formData.marque}
                         options={brandList}
-                        onChange={(event) => onChange('marque', event.target.value)}
+                        onChange={(event) => setFormData('marque', event.target.value)}
                         index={false}
                     />
 
@@ -75,7 +70,7 @@ const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
                                 label="Croquette"
                                 value={formData.croquette}
                                 options={croquetteList}
-                                onChange={(event) => onChange('croquette', event.target.value)}
+                                onChange={(event) => setFormData('croquette', event.target.value)}
                                 index={true}
                             />
 
@@ -101,7 +96,7 @@ const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
                         id="marque-input"
                         variant="outlined"
                         label="Marque"
-                        onChange={(event) => { onChange('marque', event.target.value) }}
+                        onChange={(event) => { setFormData('marque', event.target.value) }}
                         value={formData.marque}
                         fullWidth />
 
@@ -109,7 +104,7 @@ const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
                         id="croquette-input"
                         variant="outlined"
                         label="Croquette"
-                        onChange={(event) => { onChange('croquette', event.target.value) }}
+                        onChange={(event) => { setFormData('croquette', event.target.value) }}
                         value={formData.croquette}
                         fullWidth />
                 </>
@@ -130,7 +125,7 @@ const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
             {(isChecked && !step.step_croquette) && (
                 <>
                     {/* Bouton pour soumettre le formulaire */}
-                    <Button type="submit" variant="contained" color="primary" className='button-form' onClick={() => resetForm()}>
+                    <Button type="submit" variant="contained" color="primary" className='button-form' onClick={() => resetFormData()}>
                         Envoyer
                     </Button>
                 </>

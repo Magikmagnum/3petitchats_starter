@@ -26,15 +26,15 @@ import lang_fr from '../../lang/fr';
 const Form: React.FC = () => {
 
     // Définition des states pour les valeurs du formulaire et les données de la table
-    const { formData, setFormData, resetFormData } = useFormValues();
+    const formAdmin = useFormValues();
     // Utilisation du hook pour suivre les étapes
     const trackerStep = useStepTracker();
-
     const { response, getAnalyse } = useAnalyse();
 
 
     // Gestionnaire de soumission du formulaire
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+        const { formData } = formAdmin;
         event.preventDefault();
         getAnalyse(formData);
     };
@@ -45,36 +45,27 @@ const Form: React.FC = () => {
         }
     };
 
-
     return (
 
         <section className="content reverse">
             <form className="left" onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '24px', marginTop: '24px', paddingTop: '24px' }}>
 
-                {/* Champ select pour la ville */}
                 {/* Champ select pour la ligne de croquette */}
                 <FieldCroquetteComponent
-                    formData={formData}
-                    resetForm={resetFormData}
-                    onChange={setFormData}
                     trackerStep={trackerStep}
+                    formAdmin={formAdmin}
                 />
 
-                {/* Champ select pour la race de race */}
+                {/* Champ select pour la race */}
                 <FieldRaceComponent
-                    formData={formData}
-                    resetForm={resetFormData}
-                    onChange={setFormData}
                     trackerStep={trackerStep}
-
+                    formAdmin={formAdmin}
                 />
 
+                {/* Champ select pour les caractere */}
                 <FieldCaractaireComponent
-                    formData={formData}
-                    resetForm={resetFormData}
-                    onChange={setFormData}
                     trackerStep={trackerStep}
-
+                    formAdmin={formAdmin}
                 />
 
             </form>

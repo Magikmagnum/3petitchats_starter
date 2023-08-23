@@ -10,7 +10,7 @@ import { Button } from '@mui/material/';
 import SelectField, { OptionType } from "../../components/Form/SelectField";
 import HeaderWithCallbackComponent from "../../components/Header/HeaderWithCallbackComponent";
 
-import { FormValuesTypes } from '../../hook/useFormValues';
+import { FormTypes } from '../../hook/useFormValues';
 import { TrackerStepType } from '../../hook/useStepTracker';
 
 import { raceList } from "../../helpers/race_list";
@@ -20,18 +20,17 @@ import lang_fr from '../../lang/fr';
 
 // Définition des types des props attendues par le composant
 interface InputCroquetteProps {
-    formData: FormValuesTypes,
-    resetForm: () => void,
-    onChange: (fieldName: string, value: string) => void;
-    trackerStep: TrackerStepType
+    trackerStep: TrackerStepType,
+    formAdmin: FormTypes,
 }
 
 const FieldRaceComponent: React.FC<InputCroquetteProps> = ({
-    formData,
-    resetForm,
-    onChange,
+    formAdmin,
     trackerStep,
 }) => {
+
+    const { step, setStep } = trackerStep;
+    const { formData, setFormData, resetFormData } = formAdmin;
 
     // État local pour gérer l'état de la case à cocher
     const [isChecked, setIsChecked] = useState(false);
@@ -40,8 +39,6 @@ const FieldRaceComponent: React.FC<InputCroquetteProps> = ({
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setIsChecked(event.target.checked);
     };
-
-    const { step, setStep } = trackerStep;
 
     return (
         <>
@@ -55,7 +52,7 @@ const FieldRaceComponent: React.FC<InputCroquetteProps> = ({
                         label="Race"
                         value={formData.race}
                         options={raceList}
-                        onChange={(event) => onChange('race', event.target.value)}
+                        onChange={(event) => setFormData('race', event.target.value)}
                         index={false}
                     />
                     {/* Affiche le Bouton si la case à cocher est cochée */}
@@ -76,7 +73,7 @@ const FieldRaceComponent: React.FC<InputCroquetteProps> = ({
                     <TextField
                         id="race-basic"
                         label="Race"
-                        onChange={(event) => onChange('race', event.target.value)}
+                        onChange={(event) => setFormData('race', event.target.value)}
                         value={formData.race}
                         fullWidth
                         variant="outlined" />
