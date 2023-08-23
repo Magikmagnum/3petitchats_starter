@@ -15,6 +15,7 @@ import { morphplogieList } from "../../helpers/morphplogie_list";
 import { steriliseList } from "../../helpers/sterilise_list";
 
 import { FormValuesTypes } from '../../hook/useFormValues';
+import { TrackerStepType } from '../../hook/useStepTracker';
 
 import { raceList } from "../../helpers/race_list";
 
@@ -27,13 +28,15 @@ import lang_fr from '../../lang/fr';
 interface InputCaractaireProps {
     formData: FormValuesTypes,
     resetForm: () => void,
-    onChange: (field: string) => (event: SelectChangeEvent<string>) => void;
+    onChange: (fieldName: string, value: string) => void;
+    trackerStep: TrackerStepType
 }
 
 const FieldCaractaireComponent: React.FC<InputCaractaireProps> = ({
     formData,
     resetForm,
     onChange,
+    trackerStep,
 }) => {
 
 
@@ -45,11 +48,13 @@ const FieldCaractaireComponent: React.FC<InputCaractaireProps> = ({
         setIsChecked(event.target.checked);
     };
 
+    const { step, setStep } = trackerStep;
+
     return (
         <>
-            {formData.race && (
+            {step.step_race && (
                 <>
-                    <HeaderWithCallbackComponent title={lang_fr.selectionner_caractére_chat} onReset={resetForm} resetValue={['race']} />
+                    <HeaderWithCallbackComponent title={lang_fr.selectionner_caractére_chat} onReset={() => setStep('step_race', false)} />
 
                     {/* Champ select pour la ligne de âge */}
                     < SelectField
@@ -57,7 +62,7 @@ const FieldCaractaireComponent: React.FC<InputCaractaireProps> = ({
                         label="Age"
                         value={formData.stade}
                         options={ageList}
-                        onChange={onChange('stade')}
+                        onChange={(event) => onChange('stade', event.target.value)}
                         index={false}
                     />
 
@@ -67,7 +72,7 @@ const FieldCaractaireComponent: React.FC<InputCaractaireProps> = ({
                         label="Sterilite"
                         value={formData.sterilite}
                         options={steriliseList}
-                        onChange={onChange('sterilite')}
+                        onChange={(event) => onChange('sterilite', event.target.value)}
                         index={false}
                     />
                     {/* Champ select pour la ligne de activité */}
@@ -76,7 +81,7 @@ const FieldCaractaireComponent: React.FC<InputCaractaireProps> = ({
                         label="Active"
                         value={formData.activite}
                         options={activityList}
-                        onChange={onChange('activite')}
+                        onChange={(event) => onChange('activite', event.target.value)}
                         index={false}
                     />
                     {/* Champ select pour la ligne de croquette */}
@@ -85,7 +90,7 @@ const FieldCaractaireComponent: React.FC<InputCaractaireProps> = ({
                         label="Morphologie"
                         value={formData.morphologie}
                         options={morphplogieList}
-                        onChange={onChange('morphologie')}
+                        onChange={(event) => onChange('morphologie', event.target.value)}
                         index={false}
                     />
 

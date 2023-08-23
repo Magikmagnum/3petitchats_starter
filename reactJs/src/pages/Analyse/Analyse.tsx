@@ -6,22 +6,15 @@ import Alert from '@mui/material/Alert';
 import AlertTitle from '@mui/material/AlertTitle';
 import { SelectChangeEvent } from '@mui/material/';
 
-import { activityList } from "../../helpers/activity_list";
-import { ageList } from "../../helpers/age_list";
-import { morphplogieList } from "../../helpers/morphplogie_list";
-import { steriliseList } from "../../helpers/sterilise_list";
-
 import { Bar } from '../../components/Opinion/Opinion';
 import { Header } from '../../components/Header/Header';
-import HeaderWithCallbackComponent from '../../components/Header/HeaderWithCallbackComponent';
-
-import SelectField from "../../components/Form/SelectField";
 
 import useAnalyse, { AnalyseDataResponseTypes } from '../../api/useAnalyse';
 import useFormValues from '../../hook/useFormValues';
+import useStepTracker from '../../hook/useStepTracker';
 
 import FieldCroquetteComponent from "../../components/Form/FieldCroquetteComponent";
-import FieldRaceComponent from "../../components/Form/fieldRaceComponent";
+import FieldRaceComponent from "../../components/Form/FieldRaceComponent";
 import FieldCaractaireComponent from "../../components/Form/FieldCaractaireComponent";
 
 
@@ -34,12 +27,11 @@ const Form: React.FC = () => {
 
     // Définition des states pour les valeurs du formulaire et les données de la table
     const { formData, setFormData, resetFormData } = useFormValues();
+    // Utilisation du hook pour suivre les étapes
+    const trackerStep = useStepTracker();
+
     const { response, getAnalyse } = useAnalyse();
 
-    // Gestionnaire générique de changement pour les champs de texte et le select
-    const handleInputChange = (fieldName: string) => (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement> | SelectChangeEvent<string>) => {
-        setFormData({ ...formData, [fieldName]: event.target.value });
-    };
 
     // Gestionnaire de soumission du formulaire
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
@@ -64,20 +56,25 @@ const Form: React.FC = () => {
                 <FieldCroquetteComponent
                     formData={formData}
                     resetForm={resetFormData}
-                    onChange={handleInputChange}
+                    onChange={setFormData}
+                    trackerStep={trackerStep}
                 />
 
                 {/* Champ select pour la race de race */}
                 <FieldRaceComponent
                     formData={formData}
                     resetForm={resetFormData}
-                    onChange={handleInputChange}
+                    onChange={setFormData}
+                    trackerStep={trackerStep}
+
                 />
 
-                <FieldCaractaireComponent 
+                <FieldCaractaireComponent
                     formData={formData}
                     resetForm={resetFormData}
-                    onChange={handleInputChange}
+                    onChange={setFormData}
+                    trackerStep={trackerStep}
+
                 />
 
             </form>

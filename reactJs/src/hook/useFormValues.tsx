@@ -20,21 +20,25 @@ const useFormValues = () => {
         sterilite: '',
         activite: '',
     };
-    const [formData, setFormData] = useState<FormValuesTypes>(initialValues);
+    const [formData, setDataForm] = useState<FormValuesTypes>(initialValues);
 
     const resetFormData = (valuesToReset?: (keyof FormValuesTypes)[]) => {
-        const resetValues = initialValues;
+        const resetValues = formData;
 
         if (valuesToReset) {
             for (const key of valuesToReset) {
                 resetValues[key] = initialValues[key];
             }
 
-            setFormData((prevFormData) => ({
+            setDataForm((prevFormData) => ({
                 ...prevFormData,
                 ...resetValues,
             }));
         }
+    };
+
+    const setFormData = (key: string, value: string) => {
+        setDataForm({ ...formData, [key]: value });
     };
 
     return { formData, setFormData, resetFormData };

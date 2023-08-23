@@ -4,15 +4,14 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 interface Props {
   title: string;
-  onReset: (resetValue?: string[] | undefined) => void;
-  resetValue: string[];
+  onReset: () => void;
 }
 
-const HeaderWithCallbackComponent: React.FC<Props> = ({ title, onReset, resetValue }) => {
+const HeaderWithCallbackComponent: React.FC<Props> = ({ title, onReset }) => {
   return (
     <div style={{ display: 'flex', alignItems: 'center' }}>
       <IconButton
-        onClick={() => onReset(resetValue)}
+        onClick={onReset}
         className='icon-back'
         style={{ width: '48px', height: '48px', marginRight: '24px' }}
       >
