@@ -11,6 +11,8 @@ import SelectField from "./SelectField";
 
 import useBrandList from '../../api/useBrandList';
 import useCroquetteList from '../../api/useCroquetteList';
+import useCroquetteAdd from '../../api/useCroquetteAdd';
+
 import { FormTypes } from '../../hook/useFormValues';
 import { TrackerStepType } from '../../hook/useStepTracker';
 
@@ -33,10 +35,10 @@ const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
 
     // Utiliser le hook pour obtenir la liste des marques et croquettes
     const { brandList } = useBrandList();
-    const croquetteList = useCroquetteList(formData.marque);
-
+    const { isSuccess, error, send } = useCroquetteAdd();
     // État local pour gérer l'état de la case à cocher
     const [isChecked, setIsChecked] = useState(false);
+    const croquetteList = useCroquetteList(formData.marque, isChecked);
 
     // Gestionnaire de changement pour la case à cocher
     const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,7 +127,7 @@ const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
             {(isChecked && !step.step_croquette) && (
                 <>
                     {/* Bouton pour soumettre le formulaire */}
-                    <Button type="submit" variant="contained" color="primary" className='button-form' onClick={() => resetFormData()}>
+                    <Button type="submit" variant="contained" color="primary" className='button-form' onClick={() => { send(formData.marque, formData.croquette) }}>
                         Envoyer
                     </Button>
                 </>

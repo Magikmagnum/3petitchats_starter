@@ -31,7 +31,6 @@ const Form: React.FC = () => {
     const trackerStep = useStepTracker();
     const { response, getAnalyse } = useAnalyse();
 
-
     // Gestionnaire de soumission du formulaire
     const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
         const { formData } = formAdmin;

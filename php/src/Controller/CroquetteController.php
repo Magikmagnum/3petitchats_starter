@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-use App\Entity\Cat;
+
 use App\Entity\Brand;
 use App\Entity\Produit;
 use App\Entity\Category;

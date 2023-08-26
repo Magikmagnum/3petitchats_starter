@@ -3,39 +3,42 @@ import axios from 'axios';
 
 // Définir le type pour les données de croquettes
 export interface CroquetteTypes {
-  value: string;
-  key: number;
+    value: string;
+    key: number;
 }
 
 // Créer le hook custom pour gérer la liste de croquettes en fonction de la marque sélectionnée
-const useCroquetteList = (marque: string) => {
-  const [croquetteList, setCroquetteList] = useState<CroquetteTypes[]>([]);
+const useCroquetteList = (marque: string, trigger: boolean) => {
 
-  // Fonction asynchrone pour obtenir la liste de croquettes par marque
-  const getCroquetteList = async (brand: string) => {
-    try {
-      const response = await axios.get('http://localhost:8642/api/v1/croquette_by_brand/' + brand);
+    const [croquetteList, setCroquetteList] = useState<CroquetteTypes[]>([]);
 
-      const croquettesSelect: CroquetteTypes[] = response.data.data.map((Croquettes: any) => ({
-        value: Croquettes.name,
-        key: parseInt(Croquettes.id),
-      }));
+    // Fonction asynchrone pour obtenir la liste de croquettes par marque
+    const getCroquetteList = async (brand: string) => {
+        if (!trigger) {
+            try {
+                const response = await axios.get('http://localhost:8642/api/v1/croquette_by_brand/' + brand);
 
-      setCroquetteList(croquettesSelect);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+                const croquettesSelect: CroquetteTypes[] = response.data.data.map((Croquettes: any) => ({
+                    value: Croquettes.name,
+                    key: parseInt(Croquettes.id),
+                }));
 
-  // Utiliser useEffect pour appeler getCroquetteList lorsque la marque change
-  useEffect(() => {
-    if (marque) {
-      getCroquetteList(marque);
-    }
-  }, [marque]);
+                setCroquetteList(croquettesSelect);
+            } catch (error) {
+                console.error(error);
+            }
+        }
+    };
 
-  // Retourner la liste de croquettes
-  return croquetteList;
+    // Utiliser useEffect pour appeler getCroquetteList lorsque la marque change
+    useEffect(() => {
+        if (marque) {
+            getCroquetteList(marque);
+        }
+    }, [marque]);
+
+    // Retourner la liste de croquettes
+    return croquetteList;
 };
 
 export default useCroquetteList;

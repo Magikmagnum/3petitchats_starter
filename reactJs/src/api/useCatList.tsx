@@ -8,7 +8,7 @@ export interface CatTypes {
 }
 
 // Créer le hook custom pour obtenir la liste des chats
-const useCatList = () => {
+function useCatList() {
     const [catList, setCatList] = useState<CatTypes[]>([]);
 
     // Fonction asynchrone pour obtenir la liste des chats
@@ -37,6 +37,6 @@ const useCatList = () => {
 
     // Retourner la liste des chats et la fonction pour la mettre à jour
     return { catList, setCatList };
-};
+}
 
 export default useCatList;
