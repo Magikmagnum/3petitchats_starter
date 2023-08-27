@@ -17,7 +17,9 @@ const lng_fr = {
     "selectionner_marque_croquette": "Sélectionner les informations sur les croquettes utilisées.",
     "selectionner_caractére_chat": "Sélectionnez les caractéristiques de votre chat.",
     "selectionner_race_chat": "Sélectionnez la race de votre chat.",
-    "inserer_race_chat": "Entrez manuellement la race de votre chat."
+    "inserer_race_chat": "Entrez manuellement la race de votre chat.",
+    "success_message": "Les informations ont été inserer avec succès!",
+    "error_message": "Les informations n'ont pas été inserer"
 }
 
 export default lng_fr
