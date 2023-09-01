@@ -237,6 +237,7 @@ class CroquetteController extends AbstractController
         if (!$brand) {
             $brand = new Brand();
             $brand->setName($brandName);
+            $brand->setValidate(0);
             $brand->setCreatedAt(new \DateTime()); // Set the created_at value
 
             // Save the brand to the database

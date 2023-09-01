@@ -48,6 +48,7 @@ class CatController extends AbstractController
         // Create a new Cat entity and set its properties
         $cat = new Cat();
         $cat->setName($name);
+        $cat->setValidate(0);
         $cat->setCreatedAt(new \DateTimeImmutable());
 
         // Persist the entity
