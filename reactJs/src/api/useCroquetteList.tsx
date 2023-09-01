@@ -16,7 +16,7 @@ const useCroquetteList = (marque: string, trigger: boolean) => {
     const getCroquetteList = async (brand: string) => {
         if (!trigger) {
             try {
-                const response = await axios.get('http://localhost:8642/api/v1/croquette_by_brand/' + brand);
+                const response = await axios.get('http://15.188.23.24:8642/api/v1/croquette_by_brand/' + brand);
 
                 const croquettesSelect: CroquetteTypes[] = response.data.data.map((Croquettes: any) => ({
                     value: Croquettes.name,

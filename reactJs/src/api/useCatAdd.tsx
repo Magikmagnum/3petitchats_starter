@@ -13,7 +13,7 @@ const useCatAdd = () => {
             const data = { name: race };
 
             // Effectue une requête POST vers l'API des chats
-            const response = await axios.post('http://localhost:8642/api/v1/cats', data);
+            const response = await axios.post('http://15.188.23.24:8642/api/v1/cats', data);
 
             if (response.status === 201) {
                 // Chat ajouté avec succès

@@ -15,7 +15,7 @@ const useBrandList = () => {
     const getBrandList = async () => {
         try {
             // Faire la requête GET à l'API pour obtenir la liste des marques
-            const response = await axios.get('http://localhost:8642/api/v1/brand');
+            const response = await axios.get('http://15.188.23.24:8642/api/v1/brand');
 
             // Transformer les données de la réponse en format souhaité
             const brandsSelect: BrandTypes[] = response.data.data.map((brand: any) => ({

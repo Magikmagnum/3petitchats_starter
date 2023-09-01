@@ -47,7 +47,7 @@ const useAnalyse = () => {
             const { croquette, ...parametre } = data;
 
             const response = await axios.post(
-                "http://localhost:8642/api/v1/analyse/" + croquette,
+                "http://15.188.23.24:8642/api/v1/analyse/" + croquette,
                 {
                     race: parametre.race,
                     stade: parametre.stade,
