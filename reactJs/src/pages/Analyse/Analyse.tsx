@@ -14,10 +14,8 @@ import useFormValues from '../../hook/useFormValues';
 import useStepTracker from '../../hook/useStepTracker';
 
 import FieldCroquetteComponent from "../../components/Form/FieldCroquetteComponent";
-import FieldRaceComponent from "../../components/Form/FieldRaceComponent";
+import FieldRaceComponent from "../../components/Form/fieldRaceComponent";
 import FieldCaractaireComponent from "../../components/Form/FieldCaractaireComponent";
-
-
 
 import lang_fr from '../../lang/fr';
 
