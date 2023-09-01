@@ -17,7 +17,7 @@ class CatController extends AbstractController
     #[Route('/cats', name: 'cat_list', methods: 'GET')]
     public function list(CatRepository $catRepository): JsonResponse
     {
-        $cats = $catRepository->findAll();
+        $cats = $catRepository->findAllValidated();
         $response = $this->statusCode(Response::HTTP_OK, $cats);
         return $this->json($response, $response["status"]);
     }
