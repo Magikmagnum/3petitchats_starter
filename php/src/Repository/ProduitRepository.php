@@ -52,6 +52,7 @@ class ProduitRepository extends ServiceEntityRepository
             ->select('DISTINCT p.name, MIN(p.id) AS id')
             ->join('p.brand', 'b')
             ->andWhere('b.name = :brand')
+            ->andWhere('p.validate > 0')
             ->setParameter('brand', $brand)
             ->groupBy('p.name')
             ->getQuery()
