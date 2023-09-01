@@ -34,7 +34,7 @@ const FieldRaceComponent: React.FC<FieldFormeTypes> = ({
                 resetFormData(['race', 'marque', 'croquette']);
                 setIsChecked(false);
                 setStep('step_croquette', false);
-            }, 600);
+            }, 1000);
         }
     }, [isSuccess])
 

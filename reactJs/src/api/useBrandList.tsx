@@ -14,7 +14,7 @@ const useBrandList = () => {
     // Fonction asynchrone pour obtenir la liste des marques
     const getBrandList = async () => {
         try {
-            // Faire la requête GET à l'API pour obtenir les données des marques
+            // Faire la requête GET à l'API pour obtenir la liste des marques
             const response = await axios.get('http://localhost:8642/api/v1/brand');
 
             // Transformer les données de la réponse en format souhaité

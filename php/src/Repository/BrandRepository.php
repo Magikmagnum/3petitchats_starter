@@ -50,6 +50,7 @@ class BrandRepository extends ServiceEntityRepository
 
         return $this->createQueryBuilder('b')
             ->select('MIN(b.id) AS id', 'b.name')
+            ->where('b.validate > 0')
             ->groupBy('b.name')
             ->orderBy('id', 'ASC')
             ->getQuery()

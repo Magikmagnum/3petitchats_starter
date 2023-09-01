@@ -33,6 +33,9 @@ class Brand
     #[ORM\OneToMany(mappedBy: 'brand', targetEntity: Produit::class, orphanRemoval: true)]
     private Collection $product;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $validate = null;
+
     public function __construct()
     {
         $this->product = new ArrayCollection();
@@ -105,6 +108,18 @@ class Brand
                 $product->setBrand(null);
             }
         }
+
+        return $this;
+    }
+
+    public function isValidate(): ?bool
+    {
+        return $this->validate;
+    }
+
+    public function setValidate(?bool $validate): self
+    {
+        $this->validate = $validate;
 
         return $this;
     }

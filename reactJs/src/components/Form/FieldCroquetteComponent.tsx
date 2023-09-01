@@ -1,21 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Button, Alert, Stack, TextField, Checkbox, FormControlLabel, FormGroup } from '@mui/material/';
 
-
-import FormGroup from '@mui/material/FormGroup';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import TextField from '@mui/material/TextField';
-import { Button } from '@mui/material/';
-
+// Composant personnaliser
 import SelectField from "./SelectField";
-
 import useBrandList from '../../api/useBrandList';
 import useCroquetteList from '../../api/useCroquetteList';
 import useCroquetteAdd from '../../api/useCroquetteAdd';
-
 import { FormTypes } from '../../hook/useFormValues';
 import { TrackerStepType } from '../../hook/useStepTracker';
-
 import lang_fr from '../../lang/fr';
 
 // Définition des types des props attendues par le composant
@@ -33,17 +25,22 @@ const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
     const { step, setStep } = trackerStep;
     const { formData, setFormData, resetFormData } = formAdmin;
 
-    // Utiliser le hook pour obtenir la liste des marques et croquettes
-    const { brandList } = useBrandList();
-    const { isSuccess, error, send } = useCroquetteAdd();
     // État local pour gérer l'état de la case à cocher
     const [isChecked, setIsChecked] = useState(false);
     const croquetteList = useCroquetteList(formData.marque, isChecked);
+    const { isSuccess, error, send } = useCroquetteAdd();
+    // Utiliser le hook pour obtenir la liste des marques et croquettes
+    const { brandList } = useBrandList();
 
-    // Gestionnaire de changement pour la case à cocher
-    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setIsChecked(event.target.checked);
-    };
+    useEffect(() => {
+        if (isSuccess) {
+            setTimeout(() => {
+                resetFormData(['race', 'marque', 'croquette']);
+                setIsChecked(false);
+                setStep('step_croquette', false);
+            }, 1000);
+        }
+    }, [isSuccess])
 
     return (
         <>
@@ -94,6 +91,16 @@ const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
                     <div className="title titleCard">
                         {lang_fr.inserer_marque_croquette /* Les nutriments dont votre chat a besoin */}
                     </div>
+
+                    <Stack sx={{ width: '100%' }} spacing={2}>
+                        {(error) && (
+                            <Alert severity="error">{lang_fr.error_message}</Alert>
+                        )}
+                        {(isSuccess) && (
+                            <Alert severity="success">{lang_fr.success_message}</Alert>
+                        )}
+                    </Stack>
+
                     <TextField
                         id="marque-input"
                         variant="outlined"
@@ -116,7 +123,7 @@ const FieldCroquetteComponent: React.FC<InputCroquetteProps> = ({
                 <>
                     <FormGroup>
                         <FormControlLabel
-                            control={<Checkbox checked={isChecked} onChange={handleCheckboxChange} />}
+                            control={<Checkbox checked={isChecked} onChange={(event) => setIsChecked(event.target.checked)} />}
                             label={!formData.marque ? "La marque manque dans la liste ?" : "La croquette manque dans la liste ?"}
                         />
                     </FormGroup>
