@@ -4,6 +4,7 @@ namespace App\Controller;
 
 
 use App\Controller\AbstractController;
+use PhpParser\Node\Stmt\TryCatch;
 use Symfony\Component\HttpFoundation\Response;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
