@@ -19,7 +19,7 @@ const lng_fr = {
     "selectionner_race_chat": "Sélectionnez la race de votre chat.",
     "inserer_race_chat": "Entrez manuellement la race de votre chat.",
     "success_message": "Les informations ont été inserer avec succès!",
-    "error_message": "Les informations n'ont pas été inserer"
+    "error_message": "Les informations n'ont pas été inserer",
 }
 
 export default lng_fr
