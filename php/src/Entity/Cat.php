@@ -22,6 +22,9 @@ class Cat
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $modifyAt = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $validate = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -59,6 +62,18 @@ class Cat
     public function setModifyAt(?\DateTimeImmutable $modifyAt): self
     {
         $this->modifyAt = $modifyAt;
+
+        return $this;
+    }
+
+    public function isValidate(): ?bool
+    {
+        return $this->validate;
+    }
+
+    public function setValidate(?bool $validate): self
+    {
+        $this->validate = $validate;
 
         return $this;
     }
