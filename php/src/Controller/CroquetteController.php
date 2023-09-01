@@ -2,30 +2,31 @@
 
 namespace App\Controller;
 
+
+use App\Entity\Brand;
+use App\Entity\Produit;
+use App\Entity\Category;
+use App\Entity\Characteristic;
+
 use App\Repository\ProduitRepository;
 use App\Controller\AbstractController;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
-use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use App\Entity\Characteristic;
-use App\Entity\Produit;
-use App\Entity\Brand;
-use App\Entity\Category;
 
 
 class CroquetteController extends AbstractController
 {
-
     #[Route('/croquette', name: 'croquette_list', methods: "GET"),]
     public function list(ProduitRepository $produitRepository): JsonResponse
     {
         $response = $this->statusCode(Response::HTTP_OK, $produitRepository->findAll());
         return $this->json($response, $response["status"], [], ["groups" => "produit:list"]);
     }
+
 
     #[Route('/croquette/{id}', name: 'croquette_show', methods: "GET"),]
     public function showOne($id, ProduitRepository $produitRepository): JsonResponse
@@ -209,5 +210,56 @@ class CroquetteController extends AbstractController
         // Retourner une réponse de succès
         $response = $this->statusCode(Response::HTTP_OK);
         return $this->json($response, $response["status"]);
+    }
+
+
+    #[Route('/croquette/motion', name: 'croquette_motion', methods: ['POST'])]
+    public function motion(Request $request, EntityManagerInterface $entityManager): JsonResponse
+    {
+        $data = json_decode($request->getContent(), true);
+
+        // Extract the data from the JSON payload
+        $name = $data['name'];
+        $validate = $data['validate'];
+        $brandName = $data['brand']['name'];
+        $typePet = $data['categories'][0]['typePet'];
+
+
+        // Create the new product entity and set its properties
+        $product = new Produit();
+        $product->setName($name);
+        $product->setValidate($validate);
+        $product->setCreatedAt(new \DateTime()); // Set the created_at value
+
+
+        // Retrieve the brand entity by name or create a new one
+        $brand = $entityManager->getRepository(Brand::class)->findOneBy(['name' => $brandName]);
+        if (!$brand) {
+            $brand = new Brand();
+            $brand->setName($brandName);
+            $brand->setValidate(0);
+            $brand->setCreatedAt(new \DateTime()); // Set the created_at value
+
+            // Save the brand to the database
+            $entityManager->persist($brand);
+        }
+        $product->setBrand($brand);
+
+        // Create the category entity and set its properties
+        $category = new Category();
+        $category->setTypePet($typePet);
+        $category->setCreatedAt(new \DateTime()); // Set the created_at value
+
+        // Save the category to the database
+        $entityManager->persist($category);
+
+        $product->addCategory($category);
+
+        // Save the product to the database
+        $entityManager->persist($product);
+        $entityManager->flush();
+
+        $response = $this->statusCode(Response::HTTP_CREATED, $product);
+        return $this->json($response, $response["status"], [], ["groups" => "produit:list"]);
     }
 }

@@ -34,7 +34,7 @@ class Produit
     #[Groups(['produit:list'])]
     private ?bool $validate = null;
 
-    #[ORM\Column]
+    #[ORM\Column(length: 255, nullable: true)]
     #[Groups(['produit:list'])]
     private ?bool $sterilise = null;
 
@@ -62,6 +62,8 @@ class Produit
     #[ORM\OneToOne(mappedBy: 'produit', cascade: ['persist', 'remove'])]
     #[Groups(['produit:list'])]
     private ?Characteristic $characteristic = null;
+
+
 
     public function __construct()
     {

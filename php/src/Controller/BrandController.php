@@ -19,4 +19,5 @@ class BrandController extends AbstractController
         $response = $this->statusCode(Response::HTTP_OK, $brandRepository->findDistinc());
         return $this->json($response, $response["status"], [], ["groups" => "brand:list"]);
     }
+
 }
